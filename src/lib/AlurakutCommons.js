@@ -1,9 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 import NextLink from 'next/link';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons';
 
 const BASE_URL = 'http://alurakut.vercel.app/';
 const v = '1';
+
+const theme = {
+  primary: '#0070f3',
+  bgLight: '#308bc5',
+  bgDark: '#44475a',
+  textLight: '#2E7BB4',
+  textdark: '#f8f8f2',
+};
 
 function Link({ href, children, ...props }) {
   return (
@@ -16,10 +26,60 @@ function Link({ href, children, ...props }) {
 // ================================================================================================================
 // Menu
 // ================================================================================================================
+
+const Switch = styled.div`
+  .checkbox {
+    opacity: 0;
+    position: absolute;
+  }
+
+  .label {
+    background-color: #111;
+    border-radius: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px;
+    position: relative;
+    height: 21px;
+    width: 50px;
+    transform: scale(1.5);
+    margin: 7px 15px 0 0;
+  }
+
+  .label .ball {
+    background-color: #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    height: 17px;
+    width: 17px;
+    transform: translateX(2px);
+    transition: transform 0.2s linear;
+  }
+
+  .checkbox:checked + .label .ball {
+    transform: translateX(27px);
+  }
+
+  .fa-moon {
+    font-size: 14px;
+    color: #f1c40f;
+  }
+
+  .fa-sun {
+    font-size: 14px;
+    color: #f39c12;
+  }
+`;
+
 export function AlurakutMenu({ githubUser }) {
-  const [isMenuOpen, setMenuState] = React.useState(false);
+  const [isMenuOpen, setMenuState] = useState(false);
+  const [colorTheme, setColorTheme] = useState('light');
   return (
-    <AlurakutMenu.Wrapper isMenuOpen={isMenuOpen}>
+    <AlurakutMenu.Wrapper isMenuOpen={isMenuOpen} colorTheme={colorTheme}>
       <div className='container'>
         <AlurakutMenu.Logo src={`${BASE_URL}/logo.svg`} />
 
@@ -37,6 +97,26 @@ export function AlurakutMenu({ githubUser }) {
             </Link>
           ))}
         </nav>
+
+        {/* <Switch>
+          <input
+            type='checkbox'
+            className='checkbox'
+            id='chk'
+            onClick={e => {
+              if (e.target.checked) {
+                setColorTheme('dark');
+              } else if (!e.target.checked) {
+                setColorTheme('light');
+              }
+            }}
+          />
+          <label className='label' htmlFor='chk'>
+            <FontAwesomeIcon icon={faSun} className='fas fa-sun' />
+            <FontAwesomeIcon icon={faMoon} className='fas fa-moon' />
+            <div className='ball'></div>
+          </label>
+        </Switch> */}
 
         <nav>
           <a href={`/logout`}>Sair</a>
@@ -56,9 +136,11 @@ export function AlurakutMenu({ githubUser }) {
     </AlurakutMenu.Wrapper>
   );
 }
+
 AlurakutMenu.Wrapper = styled.header`
   width: 100%;
-  background-color: #308bc5;
+  background-color: ${props =>
+    props.colorTheme == 'dark' ? theme.bgDark : theme.bgLight};
   .alurakutMenuProfileSidebar {
     background: white;
     position: fixed;
@@ -98,7 +180,8 @@ AlurakutMenu.Wrapper = styled.header`
     }
   }
   .container {
-    background-color: #308bc5;
+    background-color: ${props =>
+      props.colorTheme == 'dark' ? theme.bgDark : theme.bgLight};
     padding: 7px 16px;
     max-width: 1110px;
     margin: auto;
@@ -155,7 +238,7 @@ AlurakutMenu.Wrapper = styled.header`
       font-size: 12px;
       ::placeholder {
         color: #ffffff;
-        opacity: 1;
+        opacity: 0.8;
       }
     }
   }
@@ -230,7 +313,8 @@ export function AlurakutProfileSidebarMenuDefault() {
 AlurakutProfileSidebarMenuDefault.Wrapper = styled.div`
   a {
     font-size: 12px;
-    color: #2e7bb4;
+    color: ${props =>
+      props.colorTheme == 'dark' ? theme.textDark : theme.textLight};
     margin-bottom: 16px;
     display: flex;
     align-items: center;
@@ -273,7 +357,9 @@ export function OrkutNostalgicIconSet(props) {
               className='OrkutNostalgicIconSet__iconSample'
               src={`https://alurakut.vercel.app/icons/${icon}.svg`}
             />
-            {props[slug] ? props[slug] : 0}
+            {props[slug]
+              ? props[slug]
+              : Math.floor(Math.random() * (300 - 0 + 1)) + 0}
           </span>
         </li>
       ))}
@@ -282,7 +368,9 @@ export function OrkutNostalgicIconSet(props) {
         { name: 'Legal', slug: 'legal', icon: 'cool' },
         { name: 'Sexy', slug: 'sexy', icon: 'heart' },
       ].map(({ name, slug, icon }) => {
-        const total = props[slug] ? props[slug] : 2;
+        const total = props[slug]
+          ? props[slug]
+          : Math.floor(Math.random() * (3 - 0 + 1)) + 0;
         return (
           <li key={`orkut__icon_set__${slug}`}>
             <span className='OrkutNostalgicIconSet__title'>{name}</span>

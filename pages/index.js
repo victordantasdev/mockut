@@ -37,6 +37,7 @@ export default function Home(props) {
   const [comunidades, setComunidades] = useState(
     props.arrComunidades.length == 0 ? [] : props.arrComunidades
   );
+
   const userName = 'joaovictordantasj';
   const pessoasFavoritas = [
     'juunegreiros',
@@ -129,7 +130,10 @@ export default function Home(props) {
                           src={`https://github.com/${pessoa}.png`}
                           alt={`Foto de perfil de ${pessoa}`}
                         />
-                        <span>{pessoa}</span>
+                        <span>
+                          {pessoa} (
+                          {Math.floor(Math.random() * (300 - 0 + 1)) + 0})
+                        </span>
                       </a>
                     </li>
                   );
@@ -139,6 +143,16 @@ export default function Home(props) {
               })}
             </ul>
             <hr />
+            <a
+              href='#'
+              style={{
+                color: '#2E7BB4',
+                textDecoration: 'none',
+                fontWeight: 'bold',
+              }}
+            >
+              <span>Ver todos</span>
+            </a>
           </ProfileRelationsBoxWrapper>
 
           <ProfileRelationsBoxWrapper>
@@ -166,6 +180,16 @@ export default function Home(props) {
               })}
             </ul>
             <hr />
+            <a
+              href='#'
+              style={{
+                color: '#2E7BB4',
+                textDecoration: 'none',
+                fontWeight: 'bold',
+              }}
+            >
+              <span>Ver todos</span>
+            </a>
           </ProfileRelationsBoxWrapper>
         </div>
       </MainGrid>

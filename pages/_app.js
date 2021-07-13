@@ -31,6 +31,8 @@ const GlobalStyle = createGlobalStyle`
 const theme = {
   colors: {
     primary: '#0070f3',
+    light: '#308bc5',
+    dark: '#44475a',
   },
 };
 
