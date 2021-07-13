@@ -1,24 +1,39 @@
+import { useState } from 'react';
 import Box from '../src/components/Box';
 import MainGrid from '../src/components/MainGrid';
 import { ProfileRelationsBoxWrapper } from '../src/components/ProfileRelations';
 import {
   AlurakutMenu,
+  AlurakutProfileSidebarMenuDefault,
   OrkutNostalgicIconSet,
 } from '../src/lib/AlurakutCommons';
 
 function ProfileSideBar({ githubUser }) {
   return (
-    <Box>
+    <Box as='aside'>
       <img
         src={`https://github.com/${githubUser}.png`}
-        alt='Foto de perfil'
+        alt={`Foto de perfil de ${githubUser}`}
         style={{ borderRadius: '8px' }}
       />
+      <hr />
+      <p>
+        <a
+          className='boxLink'
+          href={`https://github.com/${githubUser}`}
+          target='_blank'
+        >
+          @{githubUser}
+        </a>
+      </p>
+      <hr />
+      <AlurakutProfileSidebarMenuDefault />
     </Box>
   );
 }
 
 export default function Home() {
+  const [comunidades, setComunidades] = useState([]);
   const userName = 'joaovictordantasj';
   const pessoasFavoritas = [
     'juunegreiros',
@@ -40,8 +55,51 @@ export default function Home() {
 
         <div className='welcomeArea' style={{ gridArea: 'welcomeArea' }}>
           <Box>
-            <h1 className='title'>Bem Vindo (a) {userName}</h1>
+            <h1 className='title'>Bem Vindo (a), {userName}</h1>
             <OrkutNostalgicIconSet />
+          </Box>
+
+          <Box>
+            <h2 className='subTitle'>O que você deseja fazer?</h2>
+            <form
+              onSubmit={e => {
+                e.preventDefault();
+                const dadosDoForm = new FormData(e.target);
+
+                console.log('campo title: ', dadosDoForm.get('title'));
+                console.log('campo image: ', dadosDoForm.get('image'));
+
+                const comunidade = {
+                  id: new Date().toISOString,
+                  title: dadosDoForm.get('title'),
+                  image: dadosDoForm.get('image'),
+                };
+
+                setComunidades([...comunidades, comunidade]);
+              }}
+            >
+              <div>
+                <input
+                  type='text'
+                  placeholder='Qual vai ser o nome da sua comunidade?'
+                  name='title'
+                  aria-label='Qual vai ser o nome da sua comunidade?'
+                  required
+                />
+              </div>
+
+              <div>
+                <input
+                  type='text'
+                  placeholder='Coloque uma URL para usarmos de capa'
+                  name='image'
+                  aria-label='Coloque uma URL para usarmos de capa'
+                  required
+                />
+              </div>
+
+              <button>Criar comunidade</button>
+            </form>
           </Box>
         </div>
 
@@ -51,7 +109,10 @@ export default function Home() {
         >
           <ProfileRelationsBoxWrapper>
             <h2 className='smallTitle'>
-              Pessoas da comunidade ({pessoasFavoritas.length})
+              Pessoas da comunidade{' '}
+              <span style={{ color: '#2E7BB4' }}>
+                ({pessoasFavoritas.length})
+              </span>
             </h2>
             <ul>
               {pessoasFavoritas.map((pessoa, i) => {
@@ -68,8 +129,31 @@ export default function Home() {
                 );
               })}
             </ul>
+            <hr />
           </ProfileRelationsBoxWrapper>
-          <Box>Comunidades</Box>
+
+          <ProfileRelationsBoxWrapper>
+            <h2 className='smallTitle'>
+              Comunidades{' '}
+              <span style={{ color: '#2E7BB4' }}>({comunidades.length})</span>
+            </h2>
+            <ul>
+              {comunidades.map(comunidade => {
+                return (
+                  <li key={comunidade.id}>
+                    <a href={comunidade.image} target='_blank'>
+                      <img
+                        src={comunidade.image}
+                        alt={`Foto de perfil da comunidade ${comunidade.title}`}
+                      />
+                      <span>{comunidade.title}</span>
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+            <hr />
+          </ProfileRelationsBoxWrapper>
         </div>
       </MainGrid>
     </>

@@ -6,6 +6,7 @@ const Box = styled.div`
   padding: 16px;
   /* CSS Pré-Pronto */
   margin-bottom: 10px;
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.06);
   .boxLink {
     font-size: 14px;
     color: #2e7bb4;

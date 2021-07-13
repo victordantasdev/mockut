@@ -505,7 +505,7 @@ export const AlurakutStyles = css`
     transition: 0.3s;
     outline: 0;
     &:hover,
-    &:focus {
+    &:active {
       opacity: 0.8;
     }
     &:disabled {
