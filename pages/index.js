@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { setCookie, parseCookies } from 'nookies';
 import Box from '../src/components/Box';
 import MainGrid from '../src/components/MainGrid';
 import { ProfileRelationsBoxWrapper } from '../src/components/ProfileRelations';
@@ -32,8 +33,10 @@ function ProfileSideBar({ githubUser }) {
   );
 }
 
-export default function Home() {
-  const [comunidades, setComunidades] = useState([]);
+export default function Home(props) {
+  const [comunidades, setComunidades] = useState(
+    props.arrComunidades.length == 0 ? [] : props.arrComunidades
+  );
   const userName = 'joaovictordantasj';
   const pessoasFavoritas = [
     'juunegreiros',
@@ -44,6 +47,11 @@ export default function Home() {
     'marcobrunodev',
     'felipefialho',
   ];
+
+  setCookie(null, 'COMUNIDADES', JSON.stringify(comunidades), {
+    maxAge: 86400 * 7,
+    path: '/',
+  });
 
   return (
     <>
@@ -65,9 +73,6 @@ export default function Home() {
               onSubmit={e => {
                 e.preventDefault();
                 const dadosDoForm = new FormData(e.target);
-
-                console.log('campo title: ', dadosDoForm.get('title'));
-                console.log('campo image: ', dadosDoForm.get('image'));
 
                 const comunidade = {
                   id: new Date().toISOString,
@@ -138,9 +143,9 @@ export default function Home() {
               <span style={{ color: '#2E7BB4' }}>({comunidades.length})</span>
             </h2>
             <ul>
-              {comunidades.map(comunidade => {
+              {comunidades.map((comunidade, i) => {
                 return (
-                  <li key={comunidade.id}>
+                  <li key={`key-${i}-${comunidade.id}`}>
                     <a href={comunidade.image} target='_blank'>
                       <img
                         src={comunidade.image}
@@ -158,4 +163,18 @@ export default function Home() {
       </MainGrid>
     </>
   );
+}
+
+export async function getServerSideProps(context) {
+  const cookies = parseCookies(context);
+  const arrComunidades =
+    Object.keys(cookies).length === 0 && cookies.constructor === Object
+      ? []
+      : JSON.parse(cookies.COMUNIDADES);
+
+  return {
+    props: {
+      arrComunidades,
+    },
+  };
 }
