@@ -121,17 +121,21 @@ export default function Home(props) {
             </h2>
             <ul>
               {pessoasFavoritas.map((pessoa, i) => {
-                return (
-                  <li key={`key-${i}-${pessoa}`}>
-                    <a href={`https://github.com/${pessoa}`} target='_blank'>
-                      <img
-                        src={`https://github.com/${pessoa}.png`}
-                        alt={`Foto de perfil de ${pessoa}`}
-                      />
-                      <span>{pessoa}</span>
-                    </a>
-                  </li>
-                );
+                if (i < 6) {
+                  return (
+                    <li key={`key-${i}-${pessoa}`}>
+                      <a href={`https://github.com/${pessoa}`} target='_blank'>
+                        <img
+                          src={`https://github.com/${pessoa}.png`}
+                          alt={`Foto de perfil de ${pessoa}`}
+                        />
+                        <span>{pessoa}</span>
+                      </a>
+                    </li>
+                  );
+                }
+
+                return;
               })}
             </ul>
             <hr />
@@ -144,17 +148,21 @@ export default function Home(props) {
             </h2>
             <ul>
               {comunidades.map((comunidade, i) => {
-                return (
-                  <li key={`key-${i}-${comunidade.id}`}>
-                    <a href={comunidade.image} target='_blank'>
-                      <img
-                        src={comunidade.image}
-                        alt={`Foto de perfil da comunidade ${comunidade.title}`}
-                      />
-                      <span>{comunidade.title}</span>
-                    </a>
-                  </li>
-                );
+                if (i < 7) {
+                  return (
+                    <li key={`key-${i}-${comunidade.id}`}>
+                      <a href={comunidade.image} target='_blank'>
+                        <img
+                          src={comunidade.image}
+                          alt={`Foto de perfil da comunidade ${comunidade.title}`}
+                        />
+                        <span>{comunidade.title}</span>
+                      </a>
+                    </li>
+                  );
+                }
+
+                return;
               })}
             </ul>
             <hr />
