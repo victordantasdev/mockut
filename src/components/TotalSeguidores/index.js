@@ -4,7 +4,7 @@ export default function TotalSeguidores({ userName }) {
   const [totalSeguidores, setTotalSeguidores] = useState([]);
 
   useEffect(_ => {
-    fetch(`https://api.github.com/users/${userName}/followers?&per_page=100`)
+    fetch(`https://api.github.com/users/${userName}`)
       .then(res => {
         if (res.ok) {
           return res.json();
@@ -12,9 +12,11 @@ export default function TotalSeguidores({ userName }) {
 
         throw new Error(res.status);
       })
-      .then(respostaCompleta => setTotalSeguidores(respostaCompleta))
+      .then(respostaCompleta => setTotalSeguidores(respostaCompleta.followers))
       .catch(err => console.error(err));
   }, []);
 
-  return totalSeguidores.length;
+  return new Intl.NumberFormat('pt-BR', { maximumSignificantDigits: 3 }).format(
+    totalSeguidores
+  );
 }

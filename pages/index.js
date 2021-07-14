@@ -34,11 +34,14 @@ function ProfileSideBar({ githubUser }) {
   );
 }
 
-function ProfileRelationsBox({ title, items }) {
+function ProfileRelationsBox({ title, items, userName }) {
   return (
     <ProfileRelationsBoxWrapper>
       <h2 className='smallTitle'>
-        {title} <span style={{ color: '#2E7BB4' }}>({items.length})</span>
+        {title}{' '}
+        <span style={{ color: '#2E7BB4' }}>
+          (<TotalSeguidores userName={userName} />)
+        </span>
       </h2>
       <ul>
         {items.map((item, index) => {
@@ -81,7 +84,7 @@ export default function Home(props) {
     props.arrComunidades.length == 0 ? [] : props.arrComunidades
   );
 
-  const userName = 'joaovictordantasj';
+  const userName = 'peas';
   const pessoasFavoritas = [
     'juunegreiros',
     'omariosouto',
@@ -93,8 +96,16 @@ export default function Home(props) {
   ];
 
   const [seguidores, setSeguidores] = useState([]);
+
+  const headers = {
+    Authorization: `Token ${props.tokens.github_token}`,
+  };
+
   useEffect(_ => {
-    fetch(`https://api.github.com/users/${userName}/followers?&per_page=100`)
+    fetch(`https://api.github.com/users/${userName}/followers?&per_page=100`, {
+      method: 'GET',
+      headers: headers,
+    })
       .then(res => {
         if (res.ok) {
           return res.json();
@@ -122,7 +133,7 @@ export default function Home(props) {
         <div className='welcomeArea' style={{ gridArea: 'welcomeArea' }}>
           <Box>
             <h1 className='title'>Bem Vindo (a), {userName}</h1>
-            <OrkutNostalgicIconSet />
+            <OrkutNostalgicIconSet userName={userName} />
           </Box>
 
           <Box>
@@ -170,7 +181,11 @@ export default function Home(props) {
           className='profileRealationsArea'
           style={{ gridArea: 'profileRealationsArea' }}
         >
-          <ProfileRelationsBox title={'Seguidores'} items={seguidores} />
+          <ProfileRelationsBox
+            title={'Seguidores'}
+            items={seguidores}
+            userName={userName}
+          />
 
           {/* <ProfileRelationsBox
             title={'Pessoas Da comunidade'}
@@ -262,6 +277,17 @@ export default function Home(props) {
   );
 }
 
+// export async function getStaticProps() {
+//   const db = {
+//     host: process.env.DB_HOST,
+//     username: process.env.DB_USER,
+//     password: process.env.DB_PASS,
+//   };
+
+//   // ...
+//   return { db };
+// }
+
 export async function getServerSideProps(context) {
   const cookies = parseCookies(context);
   const arrComunidades =
@@ -269,12 +295,14 @@ export async function getServerSideProps(context) {
       ? []
       : JSON.parse(cookies.COMUNIDADES);
 
-  const randNumberFollowers = Math.floor(Math.random() * (300 - 0 + 1)) + 0;
+  const tokens = {
+    github_token: process.env.GITHUB_TOKEN,
+  };
 
   return {
     props: {
       arrComunidades,
-      randNumberFollowers,
+      tokens,
     },
   };
 }

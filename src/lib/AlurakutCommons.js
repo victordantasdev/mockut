@@ -304,11 +304,16 @@ export function OrkutNostalgicIconSet(props) {
               className='OrkutNostalgicIconSet__iconSample'
               src={`https://alurakut.vercel.app/icons/${icon}.svg`}
             />
-            {props[slug] ? (
+            {slug == 'fas' ? (
+              <TotalSeguidores userName={props.userName} />
+            ) : (
+              Math.floor(Math.random() * (300 - 0 + 1)) + 0
+            )}
+            {/* {props[slug] ? (
               props[slug]
             ) : (
-              <TotalSeguidores userName='joaovictordantasj' />
-            )}
+              <TotalSeguidores userName={props.userName} />
+            )} */}
           </span>
         </li>
       ))}
