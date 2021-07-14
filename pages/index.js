@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { setCookie, parseCookies } from 'nookies';
 import Box from '../src/components/Box';
 import MainGrid from '../src/components/MainGrid';
@@ -8,6 +8,7 @@ import {
   AlurakutProfileSidebarMenuDefault,
   OrkutNostalgicIconSet,
 } from '../src/lib/AlurakutCommons';
+import TotalSeguidores from '../src/components/TotalSeguidores';
 
 function ProfileSideBar({ githubUser }) {
   return (
@@ -33,6 +34,48 @@ function ProfileSideBar({ githubUser }) {
   );
 }
 
+function ProfileRelationsBox({ title, items }) {
+  return (
+    <ProfileRelationsBoxWrapper>
+      <h2 className='smallTitle'>
+        {title} <span style={{ color: '#2E7BB4' }}>({items.length})</span>
+      </h2>
+      <ul>
+        {items.map((item, index) => {
+          if (index < 6) {
+            return (
+              <li key={`key-${index}-${item}`}>
+                <a href={`https://github.com/${item.login}`} target='_blank'>
+                  <img
+                    src={`https://github.com/${item.login}.png`}
+                    alt={`Foto de perfil de ${item.login}`}
+                  />
+                  <span>
+                    {item.login} (<TotalSeguidores userName={item.login} />)
+                  </span>
+                </a>
+              </li>
+            );
+          }
+
+          return;
+        })}
+      </ul>
+      <hr />
+      <a
+        href='#'
+        style={{
+          color: '#2E7BB4',
+          textDecoration: 'none',
+          fontWeight: 'bold',
+        }}
+      >
+        <span>Ver todos</span>
+      </a>
+    </ProfileRelationsBoxWrapper>
+  );
+}
+
 export default function Home(props) {
   const [comunidades, setComunidades] = useState(
     props.arrComunidades.length == 0 ? [] : props.arrComunidades
@@ -48,6 +91,20 @@ export default function Home(props) {
     'marcobrunodev',
     'felipefialho',
   ];
+
+  const [seguidores, setSeguidores] = useState([]);
+  useEffect(_ => {
+    fetch(`https://api.github.com/users/${userName}/followers?&per_page=100`)
+      .then(res => {
+        if (res.ok) {
+          return res.json();
+        }
+
+        throw new Error(res.status);
+      })
+      .then(respostaCompleta => setSeguidores(respostaCompleta))
+      .catch(err => console.error(err));
+  }, []);
 
   setCookie(null, 'COMUNIDADES', JSON.stringify(comunidades), {
     maxAge: 86400 * 7,
@@ -113,26 +170,32 @@ export default function Home(props) {
           className='profileRealationsArea'
           style={{ gridArea: 'profileRealationsArea' }}
         >
+          <ProfileRelationsBox title={'Seguidores'} items={seguidores} />
+
+          {/* <ProfileRelationsBox
+            title={'Pessoas Da comunidade'}
+            items={pessoasFavoritas}
+          /> */}
+
           <ProfileRelationsBoxWrapper>
             <h2 className='smallTitle'>
-              Pessoas da comunidade{' '}
+              Pessoas Da comunidade{' '}
               <span style={{ color: '#2E7BB4' }}>
                 ({pessoasFavoritas.length})
               </span>
             </h2>
             <ul>
-              {pessoasFavoritas.map((pessoa, i) => {
-                if (i < 6) {
+              {pessoasFavoritas.map((pessoa, index) => {
+                if (index < 6) {
                   return (
-                    <li key={`key-${i}-${pessoa}`}>
+                    <li key={`key-${index}-${pessoa}`}>
                       <a href={`https://github.com/${pessoa}`} target='_blank'>
                         <img
                           src={`https://github.com/${pessoa}.png`}
                           alt={`Foto de perfil de ${pessoa}`}
                         />
                         <span>
-                          {pessoa} (
-                          {Math.floor(Math.random() * (300 - 0 + 1)) + 0})
+                          {pessoa} (<TotalSeguidores userName={pessoa} />)
                         </span>
                       </a>
                     </li>
@@ -155,6 +218,8 @@ export default function Home(props) {
             </a>
           </ProfileRelationsBoxWrapper>
 
+          {/* <ProfileRelationsBox title={'Comunidades'} items={comunidades} /> */}
+
           <ProfileRelationsBoxWrapper>
             <h2 className='smallTitle'>
               Comunidades{' '}
@@ -162,7 +227,7 @@ export default function Home(props) {
             </h2>
             <ul>
               {comunidades.map((comunidade, i) => {
-                if (i < 7) {
+                if (i < 6) {
                   return (
                     <li key={`key-${i}-${comunidade.id}`}>
                       <a href={comunidade.image} target='_blank'>
@@ -204,9 +269,12 @@ export async function getServerSideProps(context) {
       ? []
       : JSON.parse(cookies.COMUNIDADES);
 
+  const randNumberFollowers = Math.floor(Math.random() * (300 - 0 + 1)) + 0;
+
   return {
     props: {
       arrComunidades,
+      randNumberFollowers,
     },
   };
 }

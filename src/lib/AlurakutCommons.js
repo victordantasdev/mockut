@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 import NextLink from 'next/link';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons';
+import Switch from 'react-switch';
+import { combineTheme, dark, light } from '../styles/themes';
+import TotalSeguidores from '../components/TotalSeguidores';
 
 const BASE_URL = 'http://alurakut.vercel.app/';
 const v = '1';
@@ -27,59 +28,23 @@ function Link({ href, children, ...props }) {
 // Menu
 // ================================================================================================================
 
-const Switch = styled.div`
-  .checkbox {
-    opacity: 0;
-    position: absolute;
-  }
-
-  .label {
-    background-color: #111;
-    border-radius: 50px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 5px;
-    position: relative;
-    height: 21px;
-    width: 50px;
-    transform: scale(1.5);
-    margin: 7px 15px 0 0;
-  }
-
-  .label .ball {
-    background-color: #fff;
-    border-radius: 50%;
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    height: 17px;
-    width: 17px;
-    transform: translateX(2px);
-    transition: transform 0.2s linear;
-  }
-
-  .checkbox:checked + .label .ball {
-    transform: translateX(27px);
-  }
-
-  .fa-moon {
-    font-size: 14px;
-    color: #f1c40f;
-  }
-
-  .fa-sun {
-    font-size: 14px;
-    color: #f39c12;
-  }
-`;
-
 export function AlurakutMenu({ githubUser }) {
+  const [theme, setTheme] = useState(combineTheme(light));
+
+  const toggleTheme = () => {
+    setTheme(
+      theme.title === 'light' ? combineTheme(dark) : combineTheme(light)
+    );
+  };
+
   const [isMenuOpen, setMenuState] = useState(false);
-  const [colorTheme, setColorTheme] = useState('light');
+
   return (
-    <AlurakutMenu.Wrapper isMenuOpen={isMenuOpen} colorTheme={colorTheme}>
+    <AlurakutMenu.Wrapper
+      isMenuOpen={isMenuOpen}
+      bgBolor={theme.colors.background}
+      fontColor={theme.colors.text}
+    >
       <div className='container'>
         <AlurakutMenu.Logo src={`${BASE_URL}/logo.svg`} />
 
@@ -98,25 +63,8 @@ export function AlurakutMenu({ githubUser }) {
           ))}
         </nav>
 
-        {/* <Switch>
-          <input
-            type='checkbox'
-            className='checkbox'
-            id='chk'
-            onClick={e => {
-              if (e.target.checked) {
-                setColorTheme('dark');
-              } else if (!e.target.checked) {
-                setColorTheme('light');
-              }
-            }}
-          />
-          <label className='label' htmlFor='chk'>
-            <FontAwesomeIcon icon={faSun} className='fas fa-sun' />
-            <FontAwesomeIcon icon={faMoon} className='fas fa-moon' />
-            <div className='ball'></div>
-          </label>
-        </Switch> */}
+        {/* TODO: Fazer o toggle switch do tema escuro funcionar  */}
+        {/* <Switch checked={theme.title === 'dark'} onChange={toggleTheme} /> */}
 
         <nav>
           <a href={`/logout`}>Sair</a>
@@ -139,8 +87,8 @@ export function AlurakutMenu({ githubUser }) {
 
 AlurakutMenu.Wrapper = styled.header`
   width: 100%;
-  background-color: ${props =>
-    props.colorTheme == 'dark' ? theme.bgDark : theme.bgLight};
+  background-color: #5c9ecf;
+  color: 'red';
   .alurakutMenuProfileSidebar {
     background: white;
     position: fixed;
@@ -180,8 +128,7 @@ AlurakutMenu.Wrapper = styled.header`
     }
   }
   .container {
-    background-color: ${props =>
-      props.colorTheme == 'dark' ? theme.bgDark : theme.bgLight};
+    background-color: #5c9ecf;
     padding: 7px 16px;
     max-width: 1110px;
     margin: auto;
@@ -357,9 +304,11 @@ export function OrkutNostalgicIconSet(props) {
               className='OrkutNostalgicIconSet__iconSample'
               src={`https://alurakut.vercel.app/icons/${icon}.svg`}
             />
-            {props[slug]
-              ? props[slug]
-              : Math.floor(Math.random() * (300 - 0 + 1)) + 0}
+            {props[slug] ? (
+              props[slug]
+            ) : (
+              <TotalSeguidores userName='joaovictordantasj' />
+            )}
           </span>
         </li>
       ))}
