@@ -307,7 +307,8 @@ export function OrkutNostalgicIconSet(props) {
             {slug == 'fas' ? (
               <TotalSeguidores userName={props.userName} />
             ) : (
-              Math.floor(Math.random() * (300 - 0 + 1)) + 0
+              // Math.floor(Math.random() * (300 - 0 + 1)) + 0
+              10
             )}
             {/* {props[slug] ? (
               props[slug]

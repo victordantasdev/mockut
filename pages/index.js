@@ -80,11 +80,9 @@ function ProfileRelationsBox({ title, items, userName }) {
 }
 
 export default function Home(props) {
-  const [comunidades, setComunidades] = useState(
-    props.arrComunidades.length == 0 ? [] : props.arrComunidades
-  );
+  const [comunidades, setComunidades] = useState([]);
 
-  const userName = 'peas';
+  const userName = 'joaovictordantasj';
   const pessoasFavoritas = [
     'juunegreiros',
     'omariosouto',
@@ -102,6 +100,7 @@ export default function Home(props) {
   };
 
   useEffect(_ => {
+    // API GitHub
     fetch(`https://api.github.com/users/${userName}/followers?&per_page=100`, {
       method: 'GET',
       headers: headers,
@@ -115,12 +114,39 @@ export default function Home(props) {
       })
       .then(respostaCompleta => setSeguidores(respostaCompleta))
       .catch(err => console.error(err));
-  }, []);
 
-  setCookie(null, 'COMUNIDADES', JSON.stringify(comunidades), {
-    maxAge: 86400 * 7,
-    path: '/',
-  });
+    // API GraphQl
+    fetch('https://graphql.datocms.com/', {
+      method: 'POST',
+      headers: {
+        Authorization: props.tokens.dato_cms_token,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify({
+        query: `query {
+          allCommunities {
+            id,
+            title,
+            imageUrl,
+            creatorSlug
+          }
+        }`,
+      }),
+    })
+      .then(res => {
+        if (res.ok) {
+          return res.json();
+        }
+
+        throw new Error(`${res.status} - Deu Ruim`);
+      })
+      .then(respostaCompleta => {
+        const comunidadesData = respostaCompleta.data.allCommunities;
+        setComunidades(...comunidades, comunidadesData);
+      })
+      .catch(err => console.error(err));
+  }, []);
 
   return (
     <>
@@ -144,12 +170,22 @@ export default function Home(props) {
                 const dadosDoForm = new FormData(e.target);
 
                 const comunidade = {
-                  id: new Date().toISOString,
                   title: dadosDoForm.get('title'),
-                  image: dadosDoForm.get('image'),
+                  imageUrl: dadosDoForm.get('image'),
+                  creatorSlug: userName,
                 };
 
-                setComunidades([...comunidades, comunidade]);
+                fetch('/api/comunidades', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(comunidade),
+                }).then(async res => {
+                  const dados = await res.json();
+                  const comunidade = dados.registroCriado;
+                  setComunidades([...comunidades, comunidade]);
+                });
               }}
             >
               <div>
@@ -245,9 +281,9 @@ export default function Home(props) {
                 if (i < 6) {
                   return (
                     <li key={`key-${i}-${comunidade.id}`}>
-                      <a href={comunidade.image} target='_blank'>
+                      <a href={comunidade.imageUrl} target='_blank'>
                         <img
-                          src={comunidade.image}
+                          src={comunidade.imageUrl}
                           alt={`Foto de perfil da comunidade ${comunidade.title}`}
                         />
                         <span>{comunidade.title}</span>
@@ -277,31 +313,14 @@ export default function Home(props) {
   );
 }
 
-// export async function getStaticProps() {
-//   const db = {
-//     host: process.env.DB_HOST,
-//     username: process.env.DB_USER,
-//     password: process.env.DB_PASS,
-//   };
-
-//   // ...
-//   return { db };
-// }
-
 export async function getServerSideProps(context) {
-  const cookies = parseCookies(context);
-  const arrComunidades =
-    Object.keys(cookies).length === 0 && cookies.constructor === Object
-      ? []
-      : JSON.parse(cookies.COMUNIDADES);
-
   const tokens = {
     github_token: process.env.GITHUB_TOKEN,
+    dato_cms_token: process.env.DATO_CMS_TOKEN,
   };
 
   return {
     props: {
-      arrComunidades,
       tokens,
     },
   };
