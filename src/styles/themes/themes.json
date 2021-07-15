@@ -1,0 +1,10 @@
+{
+  "colors": {
+    "primary": "#ffeb3b",
+    "secondary": "#4CAF50",
+    "mainBg": "#171B35",
+    "contrastText": "#FFFFFF",
+    "wrong": "#FF5722",
+    "success": "#4CAF50"
+  }
+}

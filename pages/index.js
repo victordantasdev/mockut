@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { setCookie, parseCookies } from 'nookies';
 import Box from '../src/components/Box';
 import MainGrid from '../src/components/MainGrid';
 import { ProfileRelationsBoxWrapper } from '../src/components/ProfileRelations';
@@ -9,6 +8,7 @@ import {
   OrkutNostalgicIconSet,
 } from '../src/lib/AlurakutCommons';
 import TotalSeguidores from '../src/components/TotalSeguidores';
+import TotalSeguindo from '../src/components/TotalSeguindo';
 
 function ProfileSideBar({ githubUser }) {
   return (
@@ -34,17 +34,15 @@ function ProfileSideBar({ githubUser }) {
   );
 }
 
-function ProfileRelationsBox({ title, items, userName }) {
+function ProfileRelationsBox(props) {
   return (
     <ProfileRelationsBoxWrapper>
       <h2 className='smallTitle'>
-        {title}{' '}
-        <span style={{ color: '#2E7BB4' }}>
-          (<TotalSeguidores userName={userName} />)
-        </span>
+        {props.title}{' '}
+        <span style={{ color: '#2E7BB4' }}>({props.children})</span>
       </h2>
       <ul>
-        {items.map((item, index) => {
+        {props.items.map((item, index) => {
           if (index < 6) {
             return (
               <li key={`key-${index}-${item}`}>
@@ -81,26 +79,16 @@ function ProfileRelationsBox({ title, items, userName }) {
 
 export default function Home(props) {
   const [comunidades, setComunidades] = useState([]);
-
   const userName = 'joaovictordantasj';
-  const pessoasFavoritas = [
-    'juunegreiros',
-    'omariosouto',
-    'peas',
-    'devmozao',
-    'rafaballerini',
-    'marcobrunodev',
-    'felipefialho',
-  ];
 
+  // Pegar seguidores do github
   const [seguidores, setSeguidores] = useState([]);
-
+  const [seguindo, setSeguindo] = useState([]);
   const headers = {
     Authorization: `Token ${props.tokens.github_token}`,
   };
-
   useEffect(_ => {
-    // API GitHub
+    // API GitHub Followers
     fetch(`https://api.github.com/users/${userName}/followers?&per_page=100`, {
       method: 'GET',
       headers: headers,
@@ -113,6 +101,23 @@ export default function Home(props) {
         throw new Error(res.status);
       })
       .then(respostaCompleta => setSeguidores(respostaCompleta))
+      .catch(err => console.error(err));
+
+    // API GitHub Following
+    fetch(`https://api.github.com/users/${userName}/following?&per_page=100`, {
+      method: 'GET',
+      headers: headers,
+    })
+      .then(res => {
+        if (res.ok) {
+          return res.json();
+        }
+
+        throw new Error(res.status);
+      })
+      .then(respostaCompleta => {
+        setSeguindo(respostaCompleta);
+      })
       .catch(err => console.error(err));
 
     // API GraphQl
@@ -150,7 +155,7 @@ export default function Home(props) {
 
   return (
     <>
-      <AlurakutMenu githubUser={userName} />
+      <AlurakutMenu toggleTheme={props.toggleTheme} githubUser={userName} />
       <MainGrid>
         <div className='profileArea' style={{ gridArea: 'profileArea' }}>
           <ProfileSideBar githubUser={userName} />
@@ -217,59 +222,13 @@ export default function Home(props) {
           className='profileRealationsArea'
           style={{ gridArea: 'profileRealationsArea' }}
         >
-          <ProfileRelationsBox
-            title={'Seguidores'}
-            items={seguidores}
-            userName={userName}
-          />
+          <ProfileRelationsBox title={'Fãs'} items={seguidores}>
+            <TotalSeguidores userName={userName} />
+          </ProfileRelationsBox>
 
-          {/* <ProfileRelationsBox
-            title={'Pessoas Da comunidade'}
-            items={pessoasFavoritas}
-          /> */}
-
-          <ProfileRelationsBoxWrapper>
-            <h2 className='smallTitle'>
-              Pessoas Da comunidade{' '}
-              <span style={{ color: '#2E7BB4' }}>
-                ({pessoasFavoritas.length})
-              </span>
-            </h2>
-            <ul>
-              {pessoasFavoritas.map((pessoa, index) => {
-                if (index < 6) {
-                  return (
-                    <li key={`key-${index}-${pessoa}`}>
-                      <a href={`https://github.com/${pessoa}`} target='_blank'>
-                        <img
-                          src={`https://github.com/${pessoa}.png`}
-                          alt={`Foto de perfil de ${pessoa}`}
-                        />
-                        <span>
-                          {pessoa} (<TotalSeguidores userName={pessoa} />)
-                        </span>
-                      </a>
-                    </li>
-                  );
-                }
-
-                return;
-              })}
-            </ul>
-            <hr />
-            <a
-              href='#'
-              style={{
-                color: '#2E7BB4',
-                textDecoration: 'none',
-                fontWeight: 'bold',
-              }}
-            >
-              <span>Ver todos</span>
-            </a>
-          </ProfileRelationsBoxWrapper>
-
-          {/* <ProfileRelationsBox title={'Comunidades'} items={comunidades} /> */}
+          <ProfileRelationsBox title={'Pessoas da comunidade'} items={seguindo}>
+            <TotalSeguindo userName={userName} />
+          </ProfileRelationsBox>
 
           <ProfileRelationsBoxWrapper>
             <h2 className='smallTitle'>

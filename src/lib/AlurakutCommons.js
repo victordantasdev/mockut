@@ -1,20 +1,12 @@
-import React, { useState } from 'react';
-import styled, { css } from 'styled-components';
+import React, { useContext, useState } from 'react';
+import styled, { css, ThemeContext } from 'styled-components';
 import NextLink from 'next/link';
-import Switch from 'react-switch';
-import { combineTheme, dark, light } from '../styles/themes';
 import TotalSeguidores from '../components/TotalSeguidores';
+import Switch from 'react-switch';
+import { shade } from 'polished';
 
 const BASE_URL = 'http://alurakut.vercel.app/';
 const v = '1';
-
-const theme = {
-  primary: '#0070f3',
-  bgLight: '#308bc5',
-  bgDark: '#44475a',
-  textLight: '#2E7BB4',
-  textdark: '#f8f8f2',
-};
 
 function Link({ href, children, ...props }) {
   return (
@@ -24,27 +16,20 @@ function Link({ href, children, ...props }) {
   );
 }
 
-// ================================================================================================================
+// =============================================================================
 // Menu
-// ================================================================================================================
+// =============================================================================
 
-export function AlurakutMenu({ githubUser }) {
-  const [theme, setTheme] = useState(combineTheme(light));
-
-  const toggleTheme = () => {
-    setTheme(
-      theme.title === 'light' ? combineTheme(dark) : combineTheme(light)
-    );
-  };
-
+export function AlurakutMenu({ githubUser, toggleTheme }) {
   const [isMenuOpen, setMenuState] = useState(false);
+  console.log('toggleTheme: ', toggleTheme);
+  const { colors, title } = useContext(ThemeContext);
+  // const [theme, setTheme] = useState(themes.light);
+  // const [checked, setChecked] = useState(false);
 
   return (
-    <AlurakutMenu.Wrapper
-      isMenuOpen={isMenuOpen}
-      bgBolor={theme.colors.background}
-      fontColor={theme.colors.text}
-    >
+    <AlurakutMenu.Wrapper isMenuOpen={isMenuOpen}>
+      {/* {console.log(theme)} */}
       <div className='container'>
         <AlurakutMenu.Logo src={`${BASE_URL}/logo.svg`} />
 
@@ -63,8 +48,17 @@ export function AlurakutMenu({ githubUser }) {
           ))}
         </nav>
 
-        {/* TODO: Fazer o toggle switch do tema escuro funcionar  */}
-        {/* <Switch checked={theme.title === 'dark'} onChange={toggleTheme} /> */}
+        <Switch
+          onChange={toggleTheme}
+          checked={title === 'dark'}
+          checkedIcon={false}
+          uncheckedIcon={false}
+          height={10}
+          width={40}
+          handleDiameter={20}
+          offColor={shade(0.15, colors.header)}
+          onColor={shade(0.15, colors.header)}
+        />
 
         <nav>
           <a href={`/logout`}>Sair</a>
@@ -87,8 +81,7 @@ export function AlurakutMenu({ githubUser }) {
 
 AlurakutMenu.Wrapper = styled.header`
   width: 100%;
-  background-color: #5c9ecf;
-  color: 'red';
+  background-color: ${props => props.theme.colors.header};
   .alurakutMenuProfileSidebar {
     background: white;
     position: fixed;
@@ -115,7 +108,7 @@ AlurakutMenu.Wrapper = styled.header`
     }
     .boxLink {
       font-size: 18px;
-      color: #2e7bb4;
+      color: ${props => props.theme.color};
       -webkit-text-decoration: none;
       text-decoration: none;
       font-weight: 800;
@@ -128,11 +121,12 @@ AlurakutMenu.Wrapper = styled.header`
     }
   }
   .container {
-    background-color: #5c9ecf;
+    background-color: ${props => props.theme.colors.header};
     padding: 7px 16px;
     max-width: 1110px;
     margin: auto;
     display: flex;
+    align-items: center;
     justify-content: space-between;
     position: relative;
     z-index: 101;
@@ -161,7 +155,7 @@ AlurakutMenu.Wrapper = styled.header`
         text-decoration: none;
         &:after {
           content: ' ';
-          background-color: #5292c1;
+          background-color: ${props => props.theme.colors.header};
           display: block;
           position: absolute;
           width: 1px;
@@ -174,8 +168,8 @@ AlurakutMenu.Wrapper = styled.header`
       }
     }
     input {
-      color: #ffffff;
-      background: #5579a1;
+      color: ${props => props.theme.colors.text};
+      background: ${props => props.theme.colors.anotherElement};
       padding: 10px 42px;
       border: 0;
       background-image: url(${`${BASE_URL}/icons/search.svg`});
@@ -184,12 +178,13 @@ AlurakutMenu.Wrapper = styled.header`
       border-radius: 1000px;
       font-size: 12px;
       ::placeholder {
-        color: #ffffff;
+        color: ${props => props.theme.colors.text};
         opacity: 0.8;
       }
     }
   }
 `;
+
 AlurakutMenu.Logo = styled.img`
   background-color: #ffffff;
   padding: 9px 14px;
@@ -219,9 +214,9 @@ function AlurakutMenuProfileSidebar({ githubUser }) {
   );
 }
 
-// ================================================================================================================
+// =============================================================================
 // AlurakutProfileSidebarMenuDefault
-// ================================================================================================================
+// =============================================================================
 export function AlurakutProfileSidebarMenuDefault() {
   return (
     <AlurakutProfileSidebarMenuDefault.Wrapper>
@@ -257,11 +252,11 @@ export function AlurakutProfileSidebarMenuDefault() {
     </AlurakutProfileSidebarMenuDefault.Wrapper>
   );
 }
+
 AlurakutProfileSidebarMenuDefault.Wrapper = styled.div`
   a {
     font-size: 12px;
-    color: ${props =>
-      props.colorTheme == 'dark' ? theme.textDark : theme.textLight};
+    color: ${props => props.theme.colors.primaryText};
     margin-bottom: 16px;
     display: flex;
     align-items: center;
@@ -275,9 +270,9 @@ AlurakutProfileSidebarMenuDefault.Wrapper = styled.div`
   }
 `;
 
-// ================================================================================================================
+// =============================================================================
 // OrkutNostalgicIconSet
-// ================================================================================================================
+// =============================================================================
 export function OrkutNostalgicIconSet(props) {
   return (
     <OrkutNostalgicIconSet.List>
@@ -310,11 +305,6 @@ export function OrkutNostalgicIconSet(props) {
               // Math.floor(Math.random() * (300 - 0 + 1)) + 0
               10
             )}
-            {/* {props[slug] ? (
-              props[slug]
-            ) : (
-              <TotalSeguidores userName={props.userName} />
-            )} */}
           </span>
         </li>
       ))}
@@ -354,6 +344,7 @@ export function OrkutNostalgicIconSet(props) {
     </OrkutNostalgicIconSet.List>
   );
 }
+
 OrkutNostalgicIconSet.List = styled.ul`
   margin-top: 32px;
   list-style: none;
@@ -387,9 +378,9 @@ OrkutNostalgicIconSet.List = styled.ul`
   }
 `;
 
-// ================================================================================================================
+// =============================================================================
 // Login Page
-// ================================================================================================================
+// =============================================================================
 const AlurakutLoginScreen = css`
   :root {
     --backgroundPrimary: #d9e6f6;
@@ -525,9 +516,9 @@ const AlurakutLoginScreen = css`
   }
 `;
 
-// ================================================================================================================
+// =============================================================================
 // Reset Styles
-// ================================================================================================================
+// =============================================================================
 export const AlurakutStyles = css`
   *::-webkit-scrollbar {
     width: 8px;

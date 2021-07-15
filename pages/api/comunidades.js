@@ -7,9 +7,6 @@ export default async function recebedorDeRequests(req, res) {
     const registroCriado = await client.items.create({
       itemType: '966374',
       ...req.body,
-      // title: 'Comunidade Teste',
-      // imageUrl: 'http://github.com/peas.png',
-      // creatorSlug: 'joaovictordantasj',
     });
 
     res.json({

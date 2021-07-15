@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import { AlurakutStyles } from '../src/lib/AlurakutCommons';
+import dark from '../src/styles/themes/dark';
+import light from '../src/styles/themes/light';
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -11,7 +13,7 @@ const GlobalStyle = createGlobalStyle`
 
   body {
     font-family: sans-serif;
-    background-color: #D9E6F6;
+    background-color: ${props => props.theme.colors.backgroundDefault};
   }
 
   #__next {
@@ -29,20 +31,18 @@ const GlobalStyle = createGlobalStyle`
   ${AlurakutStyles}
 `;
 
-const theme = {
-  colors: {
-    primary: '#0070f3',
-    light: '#308bc5',
-    dark: '#44475a',
-  },
-};
-
 export default function App({ Component, pageProps }) {
+  const [theme, setTheme] = useState(light);
+
+  const toggleTheme = () => {
+    setTheme(theme.title == 'light' ? dark : light);
+  };
+
   return (
     <>
-      <GlobalStyle />
       <ThemeProvider theme={theme}>
-        <Component {...pageProps} />
+        <GlobalStyle />
+        <Component toggleTheme={toggleTheme} {...pageProps} />
       </ThemeProvider>
     </>
   );
