@@ -13,6 +13,7 @@ import {
 } from '../src/lib/AlurakutCommons';
 import TotalSeguidores from '../src/components/TotalSeguidores';
 import TotalSeguindo from '../src/components/TotalSeguindo';
+import { getData } from './api/auth';
 
 function ProfileSideBar({ githubUser }) {
   return (
@@ -284,19 +285,12 @@ export async function getServerSideProps(context) {
   const cookies = nookies.get(context);
   const token = cookies.USER_TOKEN;
   const { githubUser } = jwt.decode(token);
+  const isAuthenticated = await getData(githubUser);
 
-  const { isAuthenticated } = await fetch(
-    'https://alurakut.vercel.app/api/auth',
-    {
-      headers: {
-        Authorization: token,
-      },
-    }
-  ).then(res => res.json());
-
-  console.log('token: ', token);
-  console.log('githubUser: ', githubUser);
-  console.log('isAuthenticated: ', isAuthenticated);
+  // console.log('cookies: ', cookies);
+  // console.log('token: ', token);
+  // console.log('githubUser: ', githubUser);
+  // console.log('isAuthenticated: ', isAuthenticated);
 
   if (!isAuthenticated) {
     return {

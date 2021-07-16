@@ -15,7 +15,7 @@ export default function LoginScreen() {
         justifyContent: 'center',
       }}
     >
-      {console.log(userName)}
+      {/* {console.log(userName)} */}
       <div className='loginScreen'>
         <section className='logoArea'>
           <img src='https://alurakut.vercel.app/logo.svg' />
