@@ -9,6 +9,7 @@ export const ProfileRelationsBoxWrapper = styled(Box)`
     max-height: 100vh;
     list-style: none;
   }
+
   img {
     object-fit: cover;
     background-position: center center;
@@ -16,6 +17,7 @@ export const ProfileRelationsBoxWrapper = styled(Box)`
     height: 100%;
     position: relative;
   }
+
   ul li a {
     display: inline-block;
     height: 102px;
@@ -48,5 +50,11 @@ export const ProfileRelationsBoxWrapper = styled(Box)`
       z-index: 1;
       background-image: linear-gradient(0deg, #00000073, transparent);
     }
+  }
+
+  a {
+    color: #2e7bb4;
+    text-decoration: none;
+    font-weight: bold;
   }
 `;

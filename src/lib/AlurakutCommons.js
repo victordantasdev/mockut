@@ -5,7 +5,7 @@ import TotalSeguidores from '../components/TotalSeguidores';
 import Switch from 'react-switch';
 import { shade } from 'polished';
 
-const BASE_URL = 'http://alurakut.vercel.app/';
+const BASE_URL = 'https://alurakut.vercel.app/';
 const v = '1';
 
 function Link({ href, children, ...props }) {
@@ -22,10 +22,7 @@ function Link({ href, children, ...props }) {
 
 export function AlurakutMenu({ githubUser, toggleTheme }) {
   const [isMenuOpen, setMenuState] = useState(false);
-  console.log('toggleTheme: ', toggleTheme);
   const { colors, title } = useContext(ThemeContext);
-  // const [theme, setTheme] = useState(themes.light);
-  // const [checked, setChecked] = useState(false);
 
   return (
     <AlurakutMenu.Wrapper isMenuOpen={isMenuOpen}>

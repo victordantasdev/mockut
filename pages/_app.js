@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { StrictMode, useState } from 'react';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import { AlurakutStyles } from '../src/lib/AlurakutCommons';
 import dark from '../src/styles/themes/dark';
@@ -32,18 +32,18 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 export default function App({ Component, pageProps }) {
-  const [theme, setTheme] = useState(light);
+  const [theme, setTheme] = useState(dark);
 
   const toggleTheme = () => {
     setTheme(theme.title == 'light' ? dark : light);
   };
 
   return (
-    <>
+    <StrictMode>
       <ThemeProvider theme={theme}>
         <GlobalStyle />
         <Component toggleTheme={toggleTheme} {...pageProps} />
       </ThemeProvider>
-    </>
+    </StrictMode>
   );
 }

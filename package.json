@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "datocms-client": "^3.4.11",
+    "jsonwebtoken": "^8.5.1",
     "next": "latest",
     "nookies": "^2.5.2",
     "polished": "^4.1.3",

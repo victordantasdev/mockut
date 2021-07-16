@@ -1,4 +1,8 @@
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import nookies from 'nookies';
+import jwt from 'jsonwebtoken';
+
 import Box from '../src/components/Box';
 import MainGrid from '../src/components/MainGrid';
 import { ProfileRelationsBoxWrapper } from '../src/components/ProfileRelations';
@@ -63,23 +67,21 @@ function ProfileRelationsBox(props) {
         })}
       </ul>
       <hr />
-      <a
-        href='#'
-        style={{
-          color: '#2E7BB4',
-          textDecoration: 'none',
-          fontWeight: 'bold',
+      <Link
+        href={{
+          pathname: props.title.toLowerCase().replace(/ /g, '-', '-'),
+          query: { name: props.userName },
         }}
       >
-        <span>Ver todos</span>
-      </a>
+        <a>Ver todos</a>
+      </Link>
     </ProfileRelationsBoxWrapper>
   );
 }
 
 export default function Home(props) {
   const [comunidades, setComunidades] = useState([]);
-  const userName = 'joaovictordantasj';
+  const userName = props.githubUser;
 
   // Pegar seguidores do github
   const [seguidores, setSeguidores] = useState([]);
@@ -222,11 +224,19 @@ export default function Home(props) {
           className='profileRealationsArea'
           style={{ gridArea: 'profileRealationsArea' }}
         >
-          <ProfileRelationsBox title={'Fãs'} items={seguidores}>
+          <ProfileRelationsBox
+            title={'Seguidores'}
+            items={seguidores}
+            userName={userName}
+          >
             <TotalSeguidores userName={userName} />
           </ProfileRelationsBox>
 
-          <ProfileRelationsBox title={'Pessoas da comunidade'} items={seguindo}>
+          <ProfileRelationsBox
+            title={'Pessoas da comunidade'}
+            items={seguindo}
+            userName={userName}
+          >
             <TotalSeguindo userName={userName} />
           </ProfileRelationsBox>
 
@@ -255,16 +265,9 @@ export default function Home(props) {
               })}
             </ul>
             <hr />
-            <a
-              href='#'
-              style={{
-                color: '#2E7BB4',
-                textDecoration: 'none',
-                fontWeight: 'bold',
-              }}
-            >
-              <span>Ver todos</span>
-            </a>
+            <Link href='/comunidades'>
+              <a>Ver todos</a>
+            </Link>
           </ProfileRelationsBoxWrapper>
         </div>
       </MainGrid>
@@ -278,9 +281,36 @@ export async function getServerSideProps(context) {
     dato_cms_token: process.env.DATO_CMS_TOKEN,
   };
 
+  const cookies = nookies.get(context);
+  const token = cookies.USER_TOKEN;
+  const { githubUser } = jwt.decode(token);
+
+  const { isAuthenticated } = await fetch(
+    'https://alurakut.vercel.app/api/auth',
+    {
+      headers: {
+        Authorization: token,
+      },
+    }
+  ).then(res => res.json());
+
+  console.log('token: ', token);
+  console.log('githubUser: ', githubUser);
+  console.log('isAuthenticated: ', isAuthenticated);
+
+  if (!isAuthenticated) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
+    };
+  }
+
   return {
     props: {
       tokens,
+      githubUser,
     },
   };
 }
