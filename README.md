@@ -1,84 +1,36 @@
-# Example app with styled-components
+# Alurakut
 
-This example features how you use a different styling solution than [styled-jsx](https://github.com/vercel/styled-jsx) that also supports universal styles. That means we can serve the required styles for the first render within the HTML and then load the rest in the client. In this case we are using [styled-components](https://github.com/styled-components/styled-components).
+[![licence mit](https://img.shields.io/badge/licence-MIT-blue.svg)](https://github.com/joaovictordantasj/SearchDevs/LICENSE)
+!['node-version'](https://img.shields.io/badge/node-14.17.2-blue)
+!['npm-version'](https://img.shields.io/badge/npm-6.14.13-blue)
+!['yarn-version'](https://img.shields.io/badge/yarn-1.22.10-blue)
 
-For this purpose we are extending the `<Document />` and injecting the server side rendered styles into the `<head>`, and also adding the `babel-plugin-styled-components` (which is required for server side rendering). Additionally we set up a global [theme](https://www.styled-components.com/docs/advanced#theming) for styled-components using NextJS custom [`<App>`](https://nextjs.org/docs/advanced-features/custom-app) component.
+## Descrição do projeto
 
-## Preview
+> O alurakut é um clone do falecido Orkut feito em Next.js integrado a API do GitHub para pegar os dados do usuário como nome, foto de perfil, número e nome de seguidores e de pessoas que está seguindo, além da integração com a API do Dato CMS para gerenciar o conteúdo das comunidades.
 
-Preview the example live on [StackBlitz](http://stackblitz.com/):
+Você pode conferir o projeto em produção clicando nesse [link](https://alurakut-lac.vercel.app/login).
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/vercel/next.js/tree/canary/examples/with-styled-components)
+---
 
-## Deploy your own
+## Dependências
 
-Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example):
+Nesse projeto foram ultilizadas as bibliotecas:
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/vercel/next.js/tree/canary/examples/with-styled-components&project-name=with-styled-components&repository-name=with-styled-components)
+* [nookies](https://www.npmjs.com/package/nookies) - Para gerenciar cookies na aplicação.
+* [styled-components](https://www.npmjs.com/package/styled-components) - Para estilizar os componentes.
+* [react-switch](https://www.npmjs.com/package/react-switch) - Para criar o switch de dark para light mode.
+* [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken) - Para fazer o decode dos tokens jwt salvos nos cookies.
 
-## How to use
+---
 
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init) or [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/) to bootstrap the example:
+## Prints do projeto
 
-```bash
-npx create-next-app --example with-styled-components with-styled-components-app
-# or
-yarn create next-app --example with-styled-components with-styled-components-app
-```
+Tela de login
+![image](https://user-images.githubusercontent.com/64330605/126041033-e25897f7-dcf1-4f77-b048-d6a43e763726.png)
 
-Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
+Tela de conteúdo (modo dark)
+![image](https://user-images.githubusercontent.com/64330605/126041114-0bdb12cf-924f-40af-b940-8d83d33773ae.png)
 
-### Try it on CodeSandbox
-
-[Open this example on CodeSandbox](https://codesandbox.io/s/github/vercel/next.js/tree/canary/examples/with-styled-components)
-
-### Notes
-
-When wrapping a [Link](https://nextjs.org/docs/api-reference/next/link) from `next/link` within a styled-component, the [as](https://styled-components.com/docs/api#as-polymorphic-prop) prop provided by `styled` will collide with the Link's `as` prop and cause styled-components to throw an `Invalid tag` error. To avoid this, you can either use the recommended [forwardedAs](https://styled-components.com/docs/api#forwardedas-prop) prop from styled-components or use a different named prop to pass to a `styled` Link.
-
-<details>
-<summary>Click to expand workaround example</summary>
-<br />
-
-**components/StyledLink.js**
-
-```javascript
-import Link from 'next/link'
-import styled from 'styled-components'
-
-const StyledLink = ({ as, children, className, href }) => (
-  <Link href={href} as={as} passHref>
-    <a className={className}>{children}</a>
-  </Link>
-)
-
-export default styled(StyledLink)`
-  color: #0075e0;
-  text-decoration: none;
-  transition: all 0.2s ease-in-out;
-
-  &:hover {
-    color: #40a9ff;
-  }
-
-  &:focus {
-    color: #40a9ff;
-    outline: none;
-    border: 0;
-  }
-`
-```
-
-**pages/index.js**
-
-```javascript
-import StyledLink from '../components/StyledLink'
-
-export default () => (
-  <StyledLink href="/post/[pid]" forwardedAs="/post/abc">
-    First post
-  </StyledLink>
-)
-```
-
-</details>
+Tela de conteúdo (modo light)
+![image](https://user-images.githubusercontent.com/64330605/126041131-bdd02792-6c68-4189-b3ad-0ae208d8a9c6.png)
