@@ -4,7 +4,7 @@ export async function getData(userName) {
   return isAuthenticated;
 }
 
-export default async function handler(req, res) {
+export default async function handler(_, res) {
   const isAuthenticated = await getData();
   res.status(200).json({ isAuthenticated });
 }

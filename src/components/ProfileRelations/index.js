@@ -40,7 +40,7 @@ export const ProfileRelationsBoxWrapper = styled(Box)`
       -webkit-box-orient: vertical;
     }
     &:after {
-      content: '';
+      content: ' ';
       display: block;
       position: absolute;
       top: 0;

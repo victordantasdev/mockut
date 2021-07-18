@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import nookies from 'nookies';
+import { getData } from './api/auth';
 
 export default function LoginScreen() {
-  const [userName, setUserName] = useState();
+  const [userName, setUserName] = useState('');
+  const [error, setError] = useState('');
   const router = useRouter();
 
   return (
@@ -37,10 +39,19 @@ export default function LoginScreen() {
         <section className='formArea'>
           <form
             className='box'
-            onSubmit={e => {
+            onSubmit={async e => {
               e.preventDefault();
 
-              fetch('https://alurakut.vercel.app/api/login', {
+              const isAuthenticated = await getData(userName);
+              console.log(isAuthenticated);
+
+              if (!isAuthenticated) {
+                return setError(
+                  'Esse usuário não existe na base de dados do GitHub, por favor verifique o nome digitado e tente novamente!'
+                );
+              }
+
+              return fetch('https://alurakut.vercel.app/api/login', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
@@ -67,6 +78,7 @@ export default function LoginScreen() {
               required
             />
             <button type='submit'>Login</button>
+            <p style={{ color: '#ff5555', marginTop: '10px' }}>{error}</p>
           </form>
 
           <footer className='box'>

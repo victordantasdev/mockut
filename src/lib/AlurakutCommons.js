@@ -58,7 +58,7 @@ export function AlurakutMenu({ githubUser, toggleTheme }) {
         />
 
         <nav>
-          <a href={`/logout`}>Sair</a>
+          <a href={`/login`}>Sair</a>
           <div>
             <input placeholder='Pesquisar no Orkut' />
           </div>
@@ -150,7 +150,7 @@ AlurakutMenu.Wrapper = styled.header`
         padding: 10px 16px;
         position: relative;
         text-decoration: none;
-        &:after {
+        /* &:after {
           content: ' ';
           background-color: ${props => props.theme.colors.header};
           display: block;
@@ -161,7 +161,7 @@ AlurakutMenu.Wrapper = styled.header`
           left: 0;
           top: 0;
           bottom: 0;
-        }
+        } */
       }
     }
     input {
