@@ -1,4 +1,4 @@
-# Alurakut
+# Mockut
 
 [![licence mit](https://img.shields.io/badge/licence-MIT-blue.svg)](https://github.com/joaovictordantasj/SearchDevs/LICENSE)
 !['node-version'](https://img.shields.io/badge/node-14.17.2-blue)
@@ -7,7 +7,7 @@
 
 ## Descrição do projeto
 
-> O alurakut é um clone do falecido Orkut feito em Next.js integrado a API do GitHub para pegar os dados do usuário como nome, foto de perfil, número e nome de seguidores e de pessoas que está seguindo, além da integração com a API do Dato CMS para gerenciar o conteúdo das comunidades.
+> O mockut é um clone do falecido Orkut feito em Next.js integrado a API do GitHub para pegar os dados do usuário como nome, foto de perfil, número e nome de seguidores e de pessoas que está seguindo, além da integração com a API do Dato CMS para gerenciar o conteúdo das comunidades.
 
 Você pode conferir o projeto em produção clicando nesse [link](https://alurakut-lac.vercel.app/login).
 
